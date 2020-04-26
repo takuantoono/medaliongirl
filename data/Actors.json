@@ -1,0 +1,7 @@
+[
+null,
+{"id":1,"battlerName":"Actor2_1","characterIndex":0,"characterName":"Actor2","classId":1,"equips":[1,1,2,5,0],"faceIndex":0,"faceName":"Actor2","traits":[{"code":43,"dataId":14,"value":1}],"initialLevel":3,"maxLevel":99,"name":"Kunugi","nickname":"虫の勇者","note":"<ja:クヌギ>","profile":""},
+{"id":2,"battlerName":"Actor1_1","characterIndex":0,"characterName":"Actor1","classId":4,"equips":[4,0,2,3,0],"faceIndex":0,"faceName":"Actor1","traits":[{"code":43,"dataId":14,"value":1},{"code":23,"dataId":0,"value":0.9}],"initialLevel":2,"maxLevel":99,"name":"Lilie","nickname":"第三守棋","note":"<ja:リーリエ>","profile":""},
+{"id":3,"battlerName":"Actor1_3","characterIndex":2,"characterName":"Actor1","classId":3,"equips":[3,0,2,3,4],"faceIndex":1,"faceName":"Actor1","traits":[],"initialLevel":3,"maxLevel":99,"name":"トゥルペ","nickname":"第ニ守棋","note":"","profile":""},
+{"id":4,"battlerName":"Actor1_2","characterIndex":1,"characterName":"Actor1","classId":2,"equips":[4,0,2,3,4],"faceIndex":2,"faceName":"Actor1","traits":[],"initialLevel":5,"maxLevel":99,"name":"ヴィンデ","nickname":"第一守棋","note":"","profile":""}
+]
