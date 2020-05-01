@@ -78,7 +78,9 @@ this.resetTextColor();
 this.drawText($gameVariables._data[3],40,32);
 this.drawIcon(313, 0, 64);
 this.resetTextColor();
-this.drawText($gameParty.gold(),40,64);
+var gx = 40
+if($gameParty.gold()>9999) gx=37
+this.drawText($gameParty.gold(),gx,64);
 this.drawIcon(311, 0, 96);
 this.resetTextColor();
 this.drawText($gameVariables._data[99],40,96);
