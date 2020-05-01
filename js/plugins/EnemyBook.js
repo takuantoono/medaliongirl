@@ -270,13 +270,6 @@
             this._enemySprite.scale.y = scale;
         }
     };
-    
-    Window_EnemyBookStatus.prototype.standardFontSize = function() {
-    	return 22;
-        };
-    Window_EnemyBookStatus.prototype.standardPadding = function() {
-    	return 6;
-	};
 
     Window_EnemyBookStatus.prototype.refresh = function() {
         var enemy = this._enemy;
@@ -306,8 +299,6 @@
 
         x = this.textPadding();
         y = lineHeight + this.textPadding();
-        
-        
 
         for (var i = 0; i < 8; i++) {
             this.changeTextColor(this.systemColor());

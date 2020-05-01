@@ -1025,7 +1025,14 @@ Sprite_Battler.prototype.updateSelectionEffect = function() {
 // Sprite_Actor
 //=============================================================================
 
-
+if (eval(Yanfly.Param.ReposBattlers)) {
+  Yanfly.Core.Sprite_Actor_setActorHome = Sprite_Actor.prototype.setActorHome;
+  Sprite_Actor.prototype.setActorHome = function(index) {
+      Yanfly.Core.Sprite_Actor_setActorHome.call(this, index);
+      this._homeX += Graphics.boxWidth - 816;
+      this._homeY += Graphics.boxHeight - 624;
+  };
+};
 
 Sprite_Actor.prototype.retreat = function() {
     this.startMove(1200, 0, 120);
@@ -1105,13 +1112,13 @@ Spriteset_Battle.prototype.rescaleBattlebackSprite = function(sprite) {
   var ratioY = height / sprite.bitmap.height;
   if (ratioX > 1.0) {
     sprite.scale.x = ratioX;
-    sprite.anchor.x = 0.6;
-    sprite.x = width +618;
+    sprite.anchor.x = 0.5;
+    sprite.x = width / 2;
   }
   if (ratioY > 1.0) {
-    sprite.scale.y = 4;
+    sprite.scale.y = ratioY;
     sprite.origin.y = 0;
-    sprite.y = -100;
+    sprite.y = 0;
   }
 };
 
@@ -1558,7 +1565,7 @@ Window_MenuStatus.prototype.drawItemImage = function(index) {
     var rect = this.itemRect(index);
     this.changePaintOpacity(actor.isBattleMember());
     var fw = Window_Base._faceWidth;
-    this.drawActorFace2(actor, rect.x + 1, rect.y + 1, fw, rect.height - 2);
+    this.drawActorFace(actor, rect.x + 1, rect.y + 1, fw, rect.height - 2);
     this.changePaintOpacity(true);
 };
 
@@ -1608,7 +1615,7 @@ Window_SkillStatus.prototype.refresh = function() {
         }
         var xpad = Yanfly.Param.WindowPadding + Window_Base._faceWidth;
         var width = w - xpad - this.textPadding();
-        this.drawActorFace2(this._actor, 0, 0, Window_Base._faceWidth, h);
+        this.drawActorFace(this._actor, 0, 0, Window_Base._faceWidth, h);
         this.drawActorSimpleStatus(this._actor, xpad, y, width);
     }
 };

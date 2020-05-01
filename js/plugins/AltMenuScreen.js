@@ -63,7 +63,7 @@
         var h = Math.min(rect.height, 144);
         var lineHeight = this.lineHeight();
         this.changePaintOpacity(actor.isBattleMember());
-        this.drawActorFace2(actor, rect.x, rect.y + lineHeight * 2.5, w, h);
+        this.drawActorFace(actor, rect.x, rect.y + lineHeight * 2.5, w, h);
         this.changePaintOpacity(true);
     };
 
