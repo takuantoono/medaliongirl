@@ -358,6 +358,7 @@ Alias.WiChLi_callOkHandler = Window_ChoiceList.prototype.callOkHandler;
 Window_ChoiceList.prototype.callOkHandler = function() {
     Alias.WiChLi_callOkHandler.call(this);
     this._messageWindow.forceClear();
+    if(SceneManager._scene._directionalPad)SceneManager._scene._directionalPad.hide();
 };
 
 //129
@@ -365,6 +366,7 @@ Alias.WiChLi_callCancelHandler = Window_ChoiceList.prototype.callCancelHandler;
 Window_ChoiceList.prototype.callCancelHandler = function() {
     Alias.WiChLi_callCancelHandler.call(this);
     this._messageWindow.forceClear();
+    if(SceneManager._scene._directionalPad)SceneManager._scene._directionalPad.hide();
 };
 
 Alias.WiChLi_processCancel = Window_ChoiceList.prototype.processCancel;

@@ -96,7 +96,9 @@ Imported.TMEventClick = true;
 
   var _Game_Player_canMove = Game_Player.prototype.canMove;
   Game_Player.prototype.canMove = function() {
-
+    if (this.eventClickMode() > 0) {
+      return false;
+    }
     return _Game_Player_canMove.call(this);
   };
   

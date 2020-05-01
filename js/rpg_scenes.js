@@ -2548,6 +2548,7 @@ Scene_Battle.prototype.onActorCancel = function() {
 
 Scene_Battle.prototype.selectEnemySelection = function() {
     this._enemyWindow.refresh();
+    SceneManager._scene._directionalPad.show();
     this._enemyWindow.show();
     this._enemyWindow.select(0);
     this._enemyWindow.activate();

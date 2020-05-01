@@ -123,15 +123,15 @@
 
 	// ----- Init resource -----
 
-	var terms_E, actors_E, classes_E, items_E, weapons_E, armors_E, enemies_E, troops_E, skills_E, states_E;
-	var terms_J, actors_J, classes_J, items_J, weapons_J, armors_J, enemies_J, troops_J, skills_J, states_J;
+	var terms_E,  classes_E, items_E, weapons_E, armors_E, enemies_E, troops_E, skills_E, states_E;
+	var terms_J,  classes_J, items_J, weapons_J, armors_J, enemies_J, troops_J, skills_J, states_J;
 	var t_weapons_E, t_armors_E, t_equips_E, t_skills_E, t_elements_E;
 	var t_weapons_J, t_armors_J, t_equips_J, t_skills_J, t_elements_J;
 
 	RTK.onReady(function(){
 		if (RTK._lang == 1) {
 			terms_J = $dataSystem.terms;
-			actors_J = $dataActors;
+			//actors_J = $dataActors;
 			classes_J = $dataClasses;
 			items_J = $dataItems;
 			weapons_J = $dataWeapons;
@@ -147,7 +147,7 @@
 			t_elements_J = $dataSystem.elements;
 
 			terms_E = M._terms_E;
-			actors_E = updateGameData(actors_J, M.translation.actors, M._meta_en);
+			//actors_E = updateGameData(actors_J, M.translation.actors, M._meta_en);
 			classes_E = updateGameData(classes_J, M.translation.classes, M._meta_en);
 			items_E = updateGameData(items_J, M.translation.items, M._meta_en);
 			weapons_E = updateGameData(weapons_J, M.translation.weapons, M._meta_en);
@@ -163,7 +163,7 @@
 			t_elements_E = updateTypeData(t_elements_J, M.translation.t_elements);
 		} else {
 			terms_E = $dataSystem.terms;
-			actors_E = $dataActors;
+			//actors_E = $dataActors;
 			classes_E = $dataClasses;
 			items_E = $dataItems;
 			weapons_E = $dataWeapons;
@@ -179,7 +179,7 @@
 			t_elements_E = $dataSystem.elements;
 
 			terms_J = M._terms_J;
-			actors_J = updateGameData(actors_E, M.translation.actors, M._meta_ja);
+			//actors_J = updateGameData(actors_E, M.translation.actors, M._meta_ja);
 			classes_J = updateGameData(classes_E, M.translation.classes, M._meta_ja);
 			items_J = updateGameData(items_E, M.translation.items, M._meta_ja);
 			weapons_J = updateGameData(weapons_E, M.translation.weapons, M._meta_ja);
@@ -214,12 +214,49 @@
 		return o;
 	};
 	function updateObject(_o, _v) {
-		if (!_o) {return; }
+		if (!_o) {return; }		
 		if ("string" == typeof _v ) {
 			var a = _v.split(M._separator_note);
 			if (a[0] != "") {
 				_o.name = a[0];
 			}
+			if(_o.stypeId){
+			if (a.length > 1 && _o.description !== undefined) {
+					_o.description = a[1];
+			}
+			if (a.length > 2 && a[2] != "") {
+				if (_o.message1 !== undefined) {
+					_o.message1 = a[2];
+				}
+			}
+			if (a.length > 3 && a[3] != "") {
+				if (_o.message2 !== undefined) {
+					_o.message2 = a[3];
+				}
+			}
+			}else{
+			if(_o.autoRemovalTiming){
+			if (a.length > 1 && a[1] != "") {
+				if (_o.message1 !== undefined) {
+					_o.message1 = a[1];
+				}
+			}
+			if (a.length > 2 && a[2] != "") {
+				if (_o.message2 !== undefined) {
+					_o.message2 = a[2];
+				}
+			}
+			if (a.length > 3 && a[3] != "") {
+				if (_o.message3 !== undefined) {
+					_o.message3 = a[3];
+				}
+			}
+			if (a.length > 4 && a[4] != "") {
+				if (_o.message4 !== undefined) {
+					_o.message4 = a[4];
+				}
+			}
+			}else{
 			if (a.length > 1 && a[1] != "") {
 				if (_o.nickname !== undefined) {
 					_o.nickname = a[1];
@@ -246,6 +283,8 @@
 				if (_o.note !== undefined) {
 					_o.note = a[3];
 				}
+			}
+			}
 			}
 		} else {
 		}
@@ -334,8 +373,8 @@
 			this.addCommand(ConfigManager.langSelect ? "言語" : "Language", "langSelect");
 		}
 	};
-	var _Window_Options_statusText = Window_Options.prototype.statusText;
-	Window_Options.prototype.statusText = function(index) {
+	var _Window_TitleCommand_statusText = Window_TitleCommand.prototype.statusText;
+	Window_TitleCommand.prototype.statusText = function(index) {
 		var symbol = this.commandSymbol(index);
 		if (symbol == "langSelect") {
 			if (this.getConfigValue(symbol) == "1") {
@@ -344,8 +383,37 @@
 				return "English";
 			}
 		}
-		return _Window_Options_statusText.call(this, index);
+		return _Window_TitleCommand_statusText.call(this, index);
 	};
+	
+	var _Window_TitleCommand_makeCommandList = 
+            Window_TitleCommand.prototype.makeCommandList;
+    Window_TitleCommand.prototype.makeCommandList = function() {
+        _Window_TitleCommand_makeCommandList.call(this);
+        this.addCommand(ConfigManager.langSelect ? "→English" : "→日本語", "langSelect");
+    };
+    
+    var _Scene_Title_createCommandWindow =
+            Scene_Title.prototype.createCommandWindow;
+    Scene_Title.prototype.createCommandWindow = function() {
+        _Scene_Title_createCommandWindow.call(this);
+        this._commandWindow.setHandler('langSelect', this.commandlangSelect.bind(this));
+    };
+
+    Scene_Title.prototype.commandlangSelect = function(index) {
+    if (ConfigManager.langSelect) {
+				ConfigManager.langSelect =false;
+				alert("Language of weapons and armors in belongings on already saved data can not be changed.")
+			} else {
+				ConfigManager.langSelect =true;
+				alert("すでにセーブされたデータ内の所持している武器防具に関する言語は変更されません。")
+			}
+			ConfigManager.save();
+			this._commandWindow.close();
+    SceneManager.push(Scene_Title);
+    };
+
+
 
 	// ----- Switch resource -----
 
@@ -359,7 +427,7 @@
 			if (_lang) {
 				if ($dataSystem.terms != terms_J) {
 					$dataSystem.terms = terms_J;
-					$dataActors = actors_J;
+					//$dataActors = actors_J;
 					$dataClasses = classes_J;
 					$dataItems = items_J;
 					$dataWeapons = weapons_J;
@@ -377,7 +445,7 @@
 			} else {
 				if ($dataSystem.terms != terms_E) {
 					$dataSystem.terms = terms_E;
-					$dataActors = actors_E;
+					//$dataActors = actors_E;
 					$dataClasses = classes_E;
 					$dataItems = items_E;
 					$dataWeapons = weapons_E;
@@ -415,78 +483,7 @@
 		RTK.terms_change();
 	};
 
-	// ----- Game_Actor support -----
-	var _Game_Actor_initMembers = Game_Actor.prototype.initMembers;
-	Game_Actor.prototype.initMembers = function() {
-		_Game_Actor_initMembers.call(this);
-		this[NK + "n"] = "";
-		this[NK + "nn"] = "";
-		this[NK + "p"] = "";
-	};
-	var _Game_Actor_setup = Game_Actor.prototype.setup;
-	Game_Actor.prototype.setup = function(actorId) {
-		_Game_Actor_setup.call(this, actorId);
-		if (RTK._ready) {
-			this._name = actors_E[this._actorId].name;
-			this._nickname = actors_E[this._actorId].nickname;
-			this._profile = actors_E[this._actorId].profile;
-			this[NK + "n"] = actors_J[this._actorId].name;
-			this[NK + "nn"] = actors_J[this._actorId].nickname;
-			this[NK + "p"] = actors_J[this._actorId].profile;
-		} else {
-			this[NK + "n"] = this._name;
-			this[NK + "nn"] = this._nickname;
-			this[NK + "p"] = this._profile;
-		}
-	};
-	var _Game_Actor_name = Game_Actor.prototype.name;
-	Game_Actor.prototype.name = function() {
-		_Game_Actor_name.call(this);
-		return ConfigManager.langSelect ? this[NK + "n"] : this._name;
-	};
-	var _Game_Actor_setName = Game_Actor.prototype.setName;
-	Game_Actor.prototype.setName = function(name) {
-		var a = name.split(M._separator);
-		if (a.length == 2) {
-			_Game_Actor_setName.call(this, a[0]);
-			this[NK + "n"] = a[1];
-		} else {
-			_Game_Actor_setName.call(this, name);
-			this[NK + "n"] = name;
-		}
-	};
-	var _Game_Actor_nickname = Game_Actor.prototype.nickname;
-	Game_Actor.prototype.nickname = function() {
-		_Game_Actor_nickname.call(this);
-		return ConfigManager.langSelect ? this[NK + "nn"] : this._nickname;
-	};
-	var _Game_Actor_setNickname = Game_Actor.prototype.setNickname;
-	Game_Actor.prototype.setNickname = function(nickname) {
-		var a = nickname.split(M._separator);
-		if (a.length == 2) {
-			_Game_Actor_setNickname.call(this, a[0]);
-			this[NK + "nn"] = a[1];
-		} else {
-			_Game_Actor_setNickname.call(this, nickname);
-			this[NK + "nn"] = nickname;
-		}
-	};
-	var _Game_Actor_profile = Game_Actor.prototype.profile;
-	Game_Actor.prototype.profile = function() {
-		_Game_Actor_profile.call(this);
-		return ConfigManager.langSelect ? this[NK + "p"] : this._profile;
-	};
-	var _Game_Actor_setProfile = Game_Actor.prototype.setProfile;
-	Game_Actor.prototype.setProfile = function(profile) {
-		var a = profile.split(M._separator);
-		if (a.length == 2) {
-			_Game_Actor_setProfile.call(this, a[0]);
-			this[NK + "p"] = a[1];
-		} else {
-			_Game_Actor_setProfile.call(this, profile);
-			this[NK + "p"] = profile;
-		}
-	};
+
 
 	// ----- Terms' default values -----
 
@@ -501,14 +498,14 @@
 	M._terms_E = {
 		"basic":["Level","Lv","HP","HP","MP","MP","TP","TP","EXP","EXP"],
 		"commands":["Fight","Escape","Attack","Guard","Item","Skill","Equip","Status","Formation","Save","Game End","Options","Weapon","Armor","Key Item","Equip","Optimize","Clear","New Game","Continue",null,"To Title","Cancel",null,"Buy","Sell"],
-		"params":["Max HP","Max MP","Attack","Defense","M.Attack","M.Defense","Agility","Luck","Hit","Evasion"],
+		"params":["Max HP","Max MP","ATK","DEF","MAT","MDF","AGI","LUK","Hit","Evasion"],
 		"messages":{"actionFailure":"There was no effect on %1!","actorDamage":"%1 took %2 damage!","actorDrain":"%1 was drained of %2 %3!","actorGain":"%1 gained %2 %3!","actorLoss":"%1 lost %2 %3!","actorNoDamage":"%1 took no damage!","actorNoHit":"Miss! %1 took no damage!","actorRecovery":"%1 recovered %2 %3!","alwaysDash":"Always Dash","bgmVolume":"BGM Volume","bgsVolume":"BGS Volume","buffAdd":"%1's %2 went up!","buffRemove":"%1's %2 returned to normal!","commandRemember":"Command Remember","counterAttack":"%1 counterattacked!","criticalToActor":"A painful blow!!","criticalToEnemy":"An excellent hit!!","debuffAdd":"%1's %2 went down!","defeat":"%1 was defeated.","emerge":"%1 emerged!","enemyDamage":"%1 took %2 damage!","enemyDrain":"%1 was drained of %2 %3!","enemyGain":"%1 gained %2 %3!","enemyLoss":"%1 lost %2 %3!","enemyNoDamage":"%1 took no damage!","enemyNoHit":"Miss! %1 took no damage!","enemyRecovery":"%1 recovered %2 %3!","escapeFailure":"However, it was unable to escape!","escapeStart":"%1 has started to escape!","evasion":"%1 evaded the attack!","expNext":"To Next %1","expTotal":"Current %1","file":"File","levelUp":"%1 is now %2 %3!","loadMessage":"Load which file?","magicEvasion":"%1 nullified the magic!","magicReflection":"%1 reflected the magic!","meVolume":"ME Volume","obtainExp":"%1 %2 received!","obtainGold":"%1\\G found!","obtainItem":"%1 found!","obtainSkill":"%1 learned!","partyName":"%1's Party","possession":"Possession","preemptive":"%1 got the upper hand!","saveMessage":"Save to which file?","seVolume":"SE Volume","substitute":"%1 protected %2!","surprise":"%1 was surprised!","useItem":"%1 uses %2!","victory":"%1 was victorious!"}
 	};
 	M._terms_J = {
 		"basic":["レベル","Lv","ＨＰ","HP","ＭＰ","MP","ＴＰ","TP","経験値","EXP"],
 		"commands":["戦う","逃げる","攻撃","防御","アイテム","スキル","装備","ステータス","並び替え","セーブ","ゲーム終了","オプション","武器","防具","大事なもの","装備","最強装備","全て外す","ニューゲーム","コンティニュー",null,"タイトルへ","やめる",null,"購入する","売却する"],
 		"params":["最大ＨＰ","最大ＭＰ","攻撃力","防御力","魔法力","魔法防御","敏捷性","運","命中率","回避率"],
-		"messages":{"actionFailure":"%1には効かなかった！","actorDamage":"%1は %2 のダメージを受けた！","actorDrain":"%1は%2を %3 奪われた！","actorGain":"%1の%2が %3 増えた！","actorLoss":"%1の%2が %3 減った！","actorNoDamage":"%1はダメージを受けていない！","actorNoHit":"ミス！　%1はダメージを受けていない！","actorRecovery":"%1の%2が %3 回復した！","alwaysDash":"常時ダッシュ","bgmVolume":"BGM 音量","bgsVolume":"BGS 音量","buffAdd":"%1の%2が上がった！","buffRemove":"%1の%2が元に戻った！","commandRemember":"コマンド記憶","counterAttack":"%1の反撃！","criticalToActor":"痛恨の一撃！！","criticalToEnemy":"会心の一撃！！","debuffAdd":"%1の%2が下がった！","defeat":"%1は戦いに敗れた。","emerge":"%1が出現！","enemyDamage":"%1に %2 のダメージを与えた！","enemyDrain":"%1の%2を %3 奪った！","enemyGain":"%1の%2が %3 増えた！","enemyLoss":"%1の%2が %3 減った！","enemyNoDamage":"%1にダメージを与えられない！","enemyNoHit":"ミス！　%1にダメージを与えられない！","enemyRecovery":"%1の%2が %3 回復した！","escapeFailure":"しかし逃げることはできなかった！","escapeStart":"%1は逃げ出した！","evasion":"%1は攻撃をかわした！","expNext":"次の%1まで","expTotal":"現在の%1","file":"ファイル","levelUp":"\\SE[Up2,100,100,0]%1は%2 %3 に上がった！","loadMessage":"どのファイルをロードしますか？","magicEvasion":"%1は魔法を打ち消した！","magicReflection":"%1は魔法を跳ね返した！","meVolume":"ME 音量","obtainExp":"%1 の%2を獲得！","obtainGold":"お金を %1\\G 手に入れた！","obtainItem":"%1を手に入れた！","obtainSkill":"%1を覚えた！","partyName":"%1たち","possession":"持っている数","preemptive":"%1は先手を取った！","saveMessage":"どのファイルにセーブしますか？","seVolume":"SE 音量","substitute":"%1が%2をかばった！","surprise":"%1は不意をつかれた！","useItem":"%1は%2を使った！","victory":"%1の勝利！"}
+		"messages":{"actionFailure":"%1には効かなかった！","actorDamage":"%1は %2 のダメージを受けた！","actorDrain":"%1は%2を %3 奪われた！","actorGain":"%1の%2が %3 増えた！","actorLoss":"%1の%2が %3 減った！","actorNoDamage":"%1はダメージを受けていない！","actorNoHit":"ミス！　%1はダメージを受けていない！","actorRecovery":"%1の%2が %3 回復した！","alwaysDash":"常時ダッシュ","bgmVolume":"BGM 音量","bgsVolume":"BGS 音量","buffAdd":"%1の%2が上がった！","buffRemove":"%1の%2が元に戻った！","commandRemember":"コマンド記憶","counterAttack":"%1の反撃！","criticalToActor":"痛恨の一撃！！","criticalToEnemy":"会心の一撃！！","debuffAdd":"%1の%2が下がった！","defeat":"%1は戦いに敗れた。","emerge":"%1が出現！","enemyDamage":"%1に %2 のダメージを与えた！","enemyDrain":"%1の%2を %3 奪った！","enemyGain":"%1の%2が %3 増えた！","enemyLoss":"%1の%2が %3 減った！","enemyNoDamage":"%1にダメージを与えられない！","enemyNoHit":"ミス！　%1にダメージを与えられない！","enemyRecovery":"%1の%2が %3 回復した！","escapeFailure":"しかし逃げることはできなかった！","escapeStart":"%1は逃げ出した！","evasion":"%1は攻撃をかわした！","expNext":"次の%1まで","expTotal":"現在の%1","file":"ファイル","levelUp":"%1は%2 %3 に上がった！","loadMessage":"どのファイルをロードしますか？","magicEvasion":"%1は魔法を打ち消した！","magicReflection":"%1は魔法を跳ね返した！","meVolume":"ME 音量","obtainExp":"%1 の%2を獲得！","obtainGold":"お金を %1\\G 手に入れた！","obtainItem":"%1を手に入れた！","obtainSkill":"%1を覚えた！","partyName":"%1たち","possession":"持っている数","preemptive":"%1は先手を取った！","saveMessage":"どのファイルにセーブしますか？","seVolume":"SE 音量","substitute":"%1が%2をかばった！","surprise":"%1は不意をつかれた！","useItem":"%1は%2を使った！","victory":"%1の勝利！"}
 	};
 
 	// ----- Translated values -----
@@ -521,7 +518,6 @@
 
 	M.writeTranslationBase = function() {
 		var ret = {
-			"actors" : $dataActors.map(function(o){return o ? [o.name, o.nickname, o.profile] : null}).splice(1),
 			"classes" : $dataClasses.map(function(o){return o ? o.name : null}).splice(1),
 			"items" : $dataItems.map(function(o){return o ? [o.name, o.description] : null}).splice(1),
 			"weapons" : $dataWeapons.map(function(o){return o ? [o.name, o.description] : null}).splice(1),
@@ -529,7 +525,7 @@
 			"enemies" : $dataEnemies.map(function(o){return o ? o.name : null}).splice(1),
 			"troops" : $dataTroops.map(function(o){return o ? o.name : null}).splice(1),
 			"skills" : $dataSkills.map(function(o){return o ? [o.name, o.description] : null}).splice(1),
-			"states" : $dataStates.map(function(o){return o ? o.name : null}).splice(1),
+			"states" : $dataStates.map(function(o){return o ? [o.name, o.message1, o.message2, o.message3, o.message4] : null}).splice(1),
 			"t_weapons" : $dataSystem.weaponTypes.map(function(o){return o;}).splice(1),
 			"t_armors" : $dataSystem.armorTypes.map(function(o){return o;}).splice(1),
 			"t_equips" : $dataSystem.equipTypes.map(function(o){return o;}).splice(1),
@@ -564,7 +560,6 @@
 	*/
 
 	M.translation = {
-		"actors":[],
 		"classes":[],
 		"items":[],
 		"weapons":[],
